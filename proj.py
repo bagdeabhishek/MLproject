@@ -193,13 +193,13 @@ train_x,test_x=feature_importance(train_x,train_y,test_x,test_y)
 gradboost_class(train_x,train_y,test_x,test_y)
 
 bagging_class(train_x,train_y,test_x,test_y)
-# KNN(train_x,train_y,test_x,test_y)
-# rdforest(train_x,train_y,test_x,test_y)
-# svm_class(train_x,train_y,test_x,test_y)
-# perceptron_nn(train_x,train_y,test_x,test_y)
+KNN(train_x,train_y,test_x,test_y)
+rdforest(train_x,train_y,test_x,test_y)
+svm_class(train_x,train_y,test_x,test_y)
+perceptron_nn(train_x,train_y,test_x,test_y)
 # # PCAnalysis(train_x,train_y,test_x,test_y)
 # # print(train_x.shape,train_y.shape)
-# GausDA(train_x,train_y,test_x,test_y)
+GausDA(train_x,train_y,test_x,test_y)
 LinDA(train_x,train_y,test_x,test_y)
 
 # for 95 accuracy 80 neurons
