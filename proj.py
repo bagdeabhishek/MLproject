@@ -59,7 +59,7 @@ def rdforest(train_x,train_y,test_x,test_y):
 #     print("Random Forest: ",mean_squared_error(rdforest_y,test_y))
     print("Random Forest: ",accuracy_score(rdforest_y,test_y))
     print(classification_report(rdforest_y,test_y))
-    print(confusion_matrix(test_y,rdforest_Y))
+    print(confusion_matrix(test_y,rdforest_y))
 
 def bagging_class(train_x,train_y,test_x,test_y):
     bag= BaggingClassifier(svm.SVC(kernel='linear'))
