@@ -100,6 +100,7 @@ def rdforest(train_x,train_y,test_x,test_y):
 #     print("Random Forest: ",mean_squared_error(rdforest_y,test_y))
     print("Random Forest: ",accuracy_score(rdforest_y,test_y))
     print(classification_report(rdforest_y,test_y))
+<<<<<<< HEAD:proj_latest.py
     confusion_mat = confusion_matrix(test_y,rdforest_y)
     print(confusion_mat);
     class_names =['WALKING','WALKING_UPSTAIRS','WALKING_DOWNSTAIRS','SITTING','STANDING','LAYING'];
@@ -109,6 +110,9 @@ def rdforest(train_x,train_y,test_x,test_y):
     confusion_matrix_plot(confusion_mat, class_names,"rdforest_norm.png", normalize=True,title='Random Forest Normalized confusion matrix')
 
     
+=======
+    print(confusion_matrix(test_y,rdforest_y))
+>>>>>>> 1cec1ed3bf3eae5c9fe38181b3abeeb386f02c67:proj.py
 
 def bagging_class(train_x,train_y,test_x,test_y):
     bag= BaggingClassifier(svm.SVC(kernel='linear'))
