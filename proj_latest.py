@@ -33,6 +33,33 @@ def read_data(file):
     data=np.array(csv_reader)
     return data
 
+def confusion_matrix_plot(con_mat, activities,filename12,normalize=False,title='Confusion matrix',cmap=plt.cm.Blues):
+    plt.imshow(con_mat, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    activity_lable = np.arange(len(activities))
+    plt.xticks(activity_lable, activities, rotation=45)
+    plt.yticks(activity_lable, activities)
+
+    if normalize:
+        con_mat = con_mat.astype('float') / con_mat.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix, without normalization')
+
+    thresh = con_mat.max() / 2.
+    for i, j in itertools.product(range(con_mat.shape[0]), range(con_mat.shape[1])):
+        plt.text(j, i, round(con_mat[i, j],2),
+                 horizontalalignment="center",
+                 color="white" if con_mat[i, j] > thresh else "black")
+
+    plt.tight_layout()
+    plt.ylabel('Original Activity')
+    plt.xlabel('Predicted Activity')
+    plt.savefig(filename12)
+    plt.show();
+    
+
+
 def svm_class(train_x,train_y,test_x,test_y):
     for kernel in {'linear','poly','rbf'}:
         clf=svm.SVC(verbose=True,kernel=kernel)
@@ -41,7 +68,14 @@ def svm_class(train_x,train_y,test_x,test_y):
         Y=clf.predict(test_x)
         print("SVM ",kernel,":",accuracy_score(Y,test_y))
         print(classification_report(Y,test_y))
-        print(confusion_matrix(test_y,Y))
+        confusion_mat = confusion_matrix(test_y,Y)
+        print(confusion_mat);
+        class_names =['WALKING','WALKING_UPSTAIRS','WALKING_DOWNSTAIRS','SITTING','STANDING','LAYING'];
+        plt.figure();
+        confusion_matrix_plot(confusion_mat,class_names,"svm_class.png",title='SVC Confusion matrix, without normalization')
+        plt.figure()
+        confusion_matrix_plot(confusion_mat, class_names,"svm_class_norm.png", normalize=True,title='SVC Normalized confusion matrix')
+    
     
 def KNN(train_x,train_y,test_x,test_y):
     neigh=KNeighborsClassifier(n_neighbors=50)
@@ -50,7 +84,14 @@ def KNN(train_x,train_y,test_x,test_y):
 #     print("KNN: ",mean_squared_error(knn_Y,test_y))
     print("KNN: ",accuracy_score(knn_Y,test_y))
     print(classification_report(knn_Y,test_y))
-    print(confusion_matrix(test_y,knn_Y))
+    confusion_mat = confusion_matrix(test_y,knn_Y)
+    print(confusion_mat);
+    class_names =['WALKING','WALKING_UPSTAIRS','WALKING_DOWNSTAIRS','SITTING','STANDING','LAYING'];
+    plt.figure();
+    confusion_matrix_plot(confusion_mat,class_names,"KNN.png",title='KNN Confusion matrix, without normalization')
+    plt.figure()
+    confusion_matrix_plot(confusion_mat, class_names,"KNN_norm.png", normalize=True,title='KNN Normalized confusion matrix')
+
 
 def rdforest(train_x,train_y,test_x,test_y):
     rdforest= RandomForestClassifier(n_estimators=100,verbose=True)
@@ -59,7 +100,15 @@ def rdforest(train_x,train_y,test_x,test_y):
 #     print("Random Forest: ",mean_squared_error(rdforest_y,test_y))
     print("Random Forest: ",accuracy_score(rdforest_y,test_y))
     print(classification_report(rdforest_y,test_y))
-    print(confusion_matrix(test_y,rdforest_Y))
+    confusion_mat = confusion_matrix(test_y,rdforest_y)
+    print(confusion_mat);
+    class_names =['WALKING','WALKING_UPSTAIRS','WALKING_DOWNSTAIRS','SITTING','STANDING','LAYING'];
+    plt.figure();
+    confusion_matrix_plot(confusion_mat,class_names,"rdforest.png",title='Random Forest Confusion matrix, without normalization')
+    plt.figure()
+    confusion_matrix_plot(confusion_mat, class_names,"rdforest_norm.png", normalize=True,title='Random Forest Normalized confusion matrix')
+
+    
 
 def bagging_class(train_x,train_y,test_x,test_y):
     bag= BaggingClassifier(svm.SVC(kernel='linear'))
@@ -67,7 +116,14 @@ def bagging_class(train_x,train_y,test_x,test_y):
     bag_y=bag.predict(test_x)
     print("Bagging Classifier: ",accuracy_score(bag_y,test_y))
     print(classification_report(bag_y,test_y))
-    print(confusion_matrix(test_y,bag_y))
+    confusion_mat = confusion_matrix(test_y,bag_y)
+    print(confusion_mat);
+    class_names =['WALKING','WALKING_UPSTAIRS','WALKING_DOWNSTAIRS','SITTING','STANDING','LAYING'];
+    plt.figure();
+    confusion_matrix_plot(confusion_mat,class_names,"bagging_class.png",title='Bagging Confusion matrix, without normalization')
+    plt.figure()
+    confusion_matrix_plot(confusion_mat, class_names,"bagging_class_norm.png", normalize=True,title='Bagging Normalized confusion matrix')
+
 
 def gradboost_class(train_x,train_y,test_x,test_y):
     classif = GradientBoostingClassifier(verbose=True)
@@ -76,7 +132,14 @@ def gradboost_class(train_x,train_y,test_x,test_y):
 #     print(classif.estimators_)
     print("GradBoost Classifier: ",accuracy_score(y,test_y))
     print(classification_report(y,test_y))
-    print(confusion_matrix(test_y,y))
+    confusion_mat =  confusion_matrix(test_y,y)
+    print(confusion_mat);
+    class_names =['WALKING','WALKING_UPSTAIRS','WALKING_DOWNSTAIRS','SITTING','STANDING','LAYING'];
+    plt.figure();
+    confusion_matrix_plot(confusion_mat,class_names,"gradboost_class.png",title='GradBoost Confusion matrix, without normalization')
+    plt.figure()
+    confusion_matrix_plot(confusion_mat, class_names,"gradboost_class_norm.png", normalize=True,title='GradBoost Normalized confusion matrix')
+
 
     
 def perceptron_nn(train_x,train_y,test_x,test_y):
@@ -86,15 +149,22 @@ def perceptron_nn(train_x,train_y,test_x,test_y):
 #     print("perceptron_nn:",mean_squared_error(y,test_y))
     print("perceptron_nn:",accuracy_score(y,test_y))
     print(classification_report(y,test_y))
+    confusion_mat =  confusion_matrix(test_y,y)
+    print(confusion_mat);
+    class_names =['WALKING','WALKING_UPSTAIRS','WALKING_DOWNSTAIRS','SITTING','STANDING','LAYING'];
+    plt.figure();
+    confusion_matrix_plot(confusion_mat,class_names,"perceptron_nn.png",title='MLP Confusion matrix, without normalization')
+    plt.figure()
+    confusion_matrix_plot(confusion_mat, class_names,"perceptron_nn_norm.png", normalize=True,title='MLP Normalized confusion matrix')
+
+
     
 def feature_importance(train_x,train_y,test_x,test_y):
-    forest = ExtraTreesClassifier(n_estimators=250,
-                              random_state=0)
+    forest = ExtraTreesClassifier(n_estimators=250,random_state=0)
 
     forest.fit(train_x,train_y)
     importances = forest.feature_importances_
-    std = np.std([tree.feature_importances_ for tree in forest.estimators_],
-             axis=0)
+    std = np.std([tree.feature_importances_ for tree in forest.estimators_],axis=0)
     indices = np.argsort(importances)[::-1]
 
     # Print the feature ranking
@@ -158,6 +228,13 @@ def GausDA(train_x,train_y,test_x,test_y):
     print("QuadraticDiscriminant Analysis:",accuracy_score(y,test_y))
     print(classification_report(y,test_y))
     print(confusion_matrix(test_y,y))
+    confusion_mat =  confusion_matrix(test_y,y)
+    print(confusion_mat);
+    class_names =['WALKING','WALKING_UPSTAIRS','WALKING_DOWNSTAIRS','SITTING','STANDING','LAYING'];
+    plt.figure();
+    confusion_matrix_plot(confusion_mat,class_names,"GausDA.png",title='GausDA Confusion matrix, without normalization')
+    plt.figure()
+    confusion_matrix_plot(confusion_mat, class_names,"GausDA_norm.png", normalize=True,title='GausDA Normalized confusion matrix')
     
 def LinDA(train_x,train_y,test_x,test_y):
     clf=LinearDiscriminantAnalysis()
@@ -167,16 +244,19 @@ def LinDA(train_x,train_y,test_x,test_y):
     print("Linear Discriminant analysis:",accuracy_score(y,test_y))
     print(classification_report(y,test_y))
     print(confusion_matrix(test_y,y))
+    confusion_mat =  confusion_matrix(test_y,y)
+    print(confusion_mat);
+    class_names =['WALKING','WALKING_UPSTAIRS','WALKING_DOWNSTAIRS','SITTING','STANDING','LAYING'];
+    plt.figure();
+    confusion_matrix_plot(confusion_mat,class_names,"LinDA.png",title='LinDA Confusion matrix, without normalization')
+    plt.figure()
+    confusion_matrix_plot(confusion_mat, class_names,"LinDA_norm.png", normalize=True,title='LinDA Normalized confusion matrix')
     
     
 def PrinCompAna(train_x,train_y,test_x,test_y):
     clf=PCA(n_components=500)
     clf.fit(train_x)
     return(clf.transform(train_x),clf.transform(test_x))
-
-
-    
-    
 
     
 train_x=read_data("data/train/X_train.txt")
